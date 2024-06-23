@@ -47,6 +47,6 @@ func (f *FakeRepo) GetUserPassword(userName string) (string, *messages.AppError)
 	return "", nil
 }
 
-func (f *FakeRepo) GetCurrentVoteSapshot() ([]entities.LeaderBoardItem, *messages.AppError) {
-	return nil, nil
+func (f *FakeRepo) SubscribeToLeaderBoardUpdates(sub *entities.LeaderBoardSubscription) {
+	return
 }

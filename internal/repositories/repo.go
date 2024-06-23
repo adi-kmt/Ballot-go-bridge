@@ -7,7 +7,7 @@ import (
 
 // Using an interface for easily testing the service
 type IRepo interface {
-	GetCurrentVoteSapshot() ([]entities.LeaderBoardItem, *messages.AppError)
+	SubscribeToLeaderBoardUpdates(sub *entities.LeaderBoardSubscription)
 	AddUser(userName, password string, isStandingForElection bool) *messages.AppError
 	AddVote(userName, VotedForUserName string) *messages.AppError
 	CheckUserExists(userName string) (bool, *messages.AppError)

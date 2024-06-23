@@ -49,6 +49,6 @@ func (s *VotingService) AddVote(userName, VotedForUserName string) *messages.App
 	return nil
 }
 
-func (s *VotingService) GetCurrentVoteSapshot() ([]entities.LeaderBoardItem, *messages.AppError) {
-	return s.repo.GetCurrentVoteSapshot()
+func (s *VotingService) GetCurrentVoteSapshot(sub *entities.LeaderBoardSubscription) {
+	s.repo.SubscribeToLeaderBoardUpdates(sub)
 }

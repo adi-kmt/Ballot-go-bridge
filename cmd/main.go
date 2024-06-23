@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/adi-kmt/ai-streak-backend-go/internal/controllers"
+	"github.com/adi-kmt/ai-streak-backend-go/internal/entities"
 	"github.com/adi-kmt/ai-streak-backend-go/internal/injection"
 	"github.com/adi-kmt/ai-streak-backend-go/internal/jwt"
 	"github.com/adi-kmt/ai-streak-backend-go/proto"
@@ -103,14 +104,14 @@ func main() {
 			conn.WriteMessage(websocket.TextMessage, []byte(err0.Message))
 			return
 		}
+		subscription := entities.NewLeaderBoardSubscription()
+		go votingService.GetCurrentVoteSapshot(subscription)
 
 		for {
-			currentScores, err0 := votingService.GetCurrentVoteSapshot()
-			if err0 == nil {
-				log.Println("WebSocket connection closed:", err)
-				return
+			select {
+			case leaderboard := <-subscription.UpdateChan:
+				conn.WriteJSON(leaderboard)
 			}
-			conn.WriteJSON(currentScores)
 		}
 	})
 

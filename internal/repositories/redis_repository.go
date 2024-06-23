@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/adi-kmt/ai-streak-backend-go/internal/entities"
 	"github.com/adi-kmt/ai-streak-backend-go/internal/messages"
@@ -122,18 +124,43 @@ func (r *RedisRepository) AddVote(userName, VotedForUserName string) *messages.A
 }
 
 // this is to get the current vote snapshot
-func (r *RedisRepository) GetCurrentVoteSapshot() ([]entities.LeaderBoardItem, *messages.AppError) {
-	leadersWithScores, err := r.redisClient.ZRevRangeWithScores(r.ctx, sortedSetContainingLeaderBoard, 0, -1).Result()
-	if err != nil {
-		return nil, messages.InternalServerError("Failed to get current vote snapshot")
-	}
+func (r *RedisRepository) SubscribeToLeaderBoardUpdates(sub *entities.LeaderBoardSubscription) {
+	ticker := time.NewTicker(5 * time.Second) // Example: check for updates every 5 seconds
 
-	var leaderBoard []entities.LeaderBoardItem
-	for _, leader := range leadersWithScores {
-		leaderBoard = append(leaderBoard, entities.LeaderBoardItem{
-			LeaderName: leader.Member.(string),
-			Score:      int(leader.Score),
-		})
-	}
-	return leaderBoard, nil
+	go func() {
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				// Fetch current leaderboard snapshot
+				leadersWithScores, err := r.redisClient.ZRevRangeWithScores(r.ctx, sortedSetContainingLeaderBoard, 0, -1).Result()
+				if err != nil {
+					// Handle error, maybe log it
+					fmt.Println("Failed to get current vote snapshot:", err)
+					continue
+				}
+
+				var leaderBoard []entities.LeaderBoardItem
+				for _, leader := range leadersWithScores {
+					leaderBoard = append(leaderBoard, entities.LeaderBoardItem{
+						LeaderName: leader.Member.(string),
+						Score:      int(leader.Score),
+					})
+				}
+
+				// Notify subscribers with updated leaderboard snapshot
+				select {
+				case sub.UpdateChan <- leaderBoard:
+				default:
+					// Handle if subscriber's channel is full or not ready to receive
+					fmt.Println("Failed to send update to subscriber: channel busy or not ready")
+				}
+
+			case <-sub.StopChan:
+				// Stop the subscription
+				return
+			}
+		}
+	}()
 }
