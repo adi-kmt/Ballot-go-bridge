@@ -24,7 +24,7 @@ func GenerateToken(username string) (string, *messages.AppError) {
 	return s, nil
 }
 
-func ParseTokenAndGetClaims(tokenString string) (string, error) {
+func ParseTokenAndGetClaims(tokenString string) (string, *messages.AppError) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -35,7 +35,7 @@ func ParseTokenAndGetClaims(tokenString string) (string, error) {
 
 	// Handle parsing errors
 	if err != nil {
-		return "", err
+		return "", messages.InternalServerError("Error in parsing the token")
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {

@@ -27,6 +27,13 @@ func (s *VotingService) AddVote(userName, VotedForUserName string) *messages.App
 	if !isUserPresent {
 		return messages.NotFound(fmt.Sprintf("User %s does not exist", userName))
 	}
+	hasUserVoted, err2 := s.repo.CheckUserHasVoted(userName)
+	if err2 != nil {
+		return err2
+	}
+	if hasUserVoted {
+		return messages.BadRequest("User has already voted")
+	}
 	// check if user is standing for election
 	isUserStandingForElection, err1 := s.repo.CheckUserIsStandingForElection(VotedForUserName)
 	if err1 != nil {
