@@ -6,6 +6,7 @@ import (
 	"github.com/adi-kmt/ai-streak-backend-go/internal/services"
 )
 
+// Simple DI component
 func Injector() (*services.UserService, *services.VotingService) {
 	redisClient := config.GetRedisClient(":5432", "", 0)
 	repository := repositories.NewRedisRepository(redisClient)

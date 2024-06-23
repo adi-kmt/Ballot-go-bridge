@@ -57,6 +57,7 @@ func main() {
 		},
 	}
 
+	// writing a custom websocket handler for the voting
 	http.HandleFunc("/v1/vote", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
