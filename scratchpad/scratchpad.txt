@@ -7,6 +7,27 @@ Endpoints
 /live-feed -> to get the current results for all the candidates
 /vote -> a session to vote, after user passes a vote, user is logged out
 
-*PS* Make sure that a user has only voted once
+*PS* Make sure that a user has only voted once, don't let user to start new session if already logged in.
+*PS* Keeping a record of who voted for whom is probably wrong, so let's not keep that data.
 
 DB -> Redis
+
+Table Schema
+User Table => Username (unique), password (string), isStandingForElection (bool), hasVoted (bool)
+Votes Table => UserName (unique), noOfVotes (int)
+
+Conditions to take care:-
+1. Make sure that a user has only voted once
+2. Make sure that while voting, that user isStandingForElection.
+
+So,
+1. One hashset per user
+2. A set of usernames to make sure that only one exist.
+3. A set of users that can be standing for elections
+4. Sorted set for all the users standing in the election with the vote count
+
+
+
+Repository functions:-
+Login, Signup, vote, Get current vote (Stream)
+
