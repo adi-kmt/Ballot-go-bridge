@@ -16,6 +16,13 @@ func NewUserService(repo repositories.IRepo) *UserService {
 }
 
 func (s *UserService) AddUser(userName, password string, isStandingForElection bool) (string, *messages.AppError) {
+	isUserPresent, err0 := s.repo.CheckUserExists(userName)
+	if err0 != nil {
+		return "", err0
+	}
+	if isUserPresent {
+		return "", messages.NotFound("User already exists")
+	}
 	err := s.repo.AddUser(userName, password, isStandingForElection)
 	if err != nil {
 		return "", err
