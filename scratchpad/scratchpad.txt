@@ -1,0 +1,12 @@
+Endpoints
+(GRPC)
+/register -> pass as candidate param
+/login -> Username and password
+
+(Websocket)
+/live-feed -> to get the current results for all the candidates
+/vote -> a session to vote, after user passes a vote, user is logged out
+
+*PS* Make sure that a user has only voted once
+
+DB -> Redis
