@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: user.proto
 
-package ai_streak_backend_go
+package proto
 
 import (
 	context "context"

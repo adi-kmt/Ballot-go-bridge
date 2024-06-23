@@ -6,7 +6,7 @@ Package ai_streak_backend_go is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package ai_streak_backend_go
+package proto
 
 import (
 	"context"
