@@ -28,7 +28,10 @@ func (f *FakeRepo) CheckUserExists(userName string) (bool, *messages.AppError) {
 }
 
 func (f *FakeRepo) CheckUserIsStandingForElection(userName string) (bool, *messages.AppError) {
-	return true, nil
+	if userName == "user2" {
+		return true, nil
+	}
+	return false, nil
 }
 
 func (f *FakeRepo) CheckUserHasVoted(userName string) (bool, *messages.AppError) {
