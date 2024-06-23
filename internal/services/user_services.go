@@ -15,16 +15,17 @@ func NewUserService(repo repositories.IRepo) *UserService {
 	}
 }
 
-func (s *UserService) AddUser(userName, password string, isStandingForElection bool) (string, error) {
+func (s *UserService) AddUser(userName, password string, isStandingForElection bool) (string, *messages.AppError) {
 	err := s.repo.AddUser(userName, password, isStandingForElection)
 	if err != nil {
 		return "", err
 	}
-	// We will send the token in the response
+	//TODO We will send the token in the response
 	return "", nil
 }
 
-func (s *UserService) ValidateUser(userName, password string) (string, error) {
+func (s *UserService) ValidateUser(userName, password string) (string, *messages.AppError) {
+	// First checking if user is present, otherwise sending a 404 user not found
 	isUserPresent, err0 := s.repo.CheckUserExists(userName)
 	if err0 != nil {
 		return "", err0
@@ -32,6 +33,7 @@ func (s *UserService) ValidateUser(userName, password string) (string, error) {
 	if !isUserPresent {
 		return "", messages.NotFound("User not found")
 	}
+	// Now checking if the password is correct for found user
 	userPassword, err1 := s.repo.GetUserPassword(userName)
 	if err1 != nil {
 		return "", err1
@@ -39,6 +41,6 @@ func (s *UserService) ValidateUser(userName, password string) (string, error) {
 	if userPassword != password {
 		return "", messages.Unauthorized("Invalid password")
 	}
-	// We will send the token in the response
+	//TODO We will send the token in the response
 	return "", nil
 }
