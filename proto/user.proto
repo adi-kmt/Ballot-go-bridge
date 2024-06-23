@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option go_package = "github.com/adi-kmt/ai-streak-backend-go";
+
+import "google/api/annotations.proto";
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message RegisterRequest {
+    string username = 1;
+    string password = 2;
+    bool isstandingforelection = 3;
+}
+
+message AuthResponse {
+    string token = 1;
+    string error = 2;
+}
+
+service AuthService {
+    rpc LoginHandler(LoginRequest) returns (AuthResponse) {
+        option (google.api.http) = {
+            post: "/v1/login"
+            body: "*"
+        };
+    }
+    rpc RegisterHandler(RegisterRequest) returns (AuthResponse) {
+        option (google.api.http) = {
+            post: "/v1/register"
+            body: "*"
+        };
+    }
+}
