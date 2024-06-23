@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/adi-kmt/ai-streak-backend-go/internal/jwt"
 	"github.com/adi-kmt/ai-streak-backend-go/internal/messages"
 	"github.com/adi-kmt/ai-streak-backend-go/internal/repositories"
 )
@@ -27,8 +28,11 @@ func (s *UserService) AddUser(userName, password string, isStandingForElection b
 	if err != nil {
 		return "", err
 	}
-	//TODO We will send the token in the response
-	return "", nil
+	jwtToken, err1 := jwt.GenerateToken(userName)
+	if err1 != nil {
+		return "", err1
+	}
+	return jwtToken, nil
 }
 
 func (s *UserService) ValidateUser(userName, password string) (string, *messages.AppError) {
@@ -48,6 +52,9 @@ func (s *UserService) ValidateUser(userName, password string) (string, *messages
 	if userPassword != password {
 		return "", messages.Unauthorized("Invalid password")
 	}
-	//TODO We will send the token in the response
-	return "", nil
+	jwtToken, err2 := jwt.GenerateToken(userName)
+	if err2 != nil {
+		return "", err2
+	}
+	return jwtToken, nil
 }
