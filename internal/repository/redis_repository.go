@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"context"
-
 	"github.com/redis/go-redis/v9"
 )
 
@@ -21,19 +19,14 @@ type leaderBoardItem struct {
 	score      int
 }
 
-type Repository struct {
-	ctx         context.Context
-	redisClient *redis.Client
-}
-
-func NewRepository(redisClient *redis.Client) *Repository {
-	return &Repository{
+func NewRedisRepository(redisClient *redis.Client) *RedisRepository {
+	return &RedisRepository{
 		redisClient: redisClient,
 	}
 }
 
 // Creating a hashset with the user key, and if standing in the election add in that
-func (r *Repository) AddUser(userName, password string, isStandingForElection bool) error {
+func (r *RedisRepository) AddUser(userName, password string, isStandingForElection bool) error {
 	pipe := r.redisClient.TxPipeline()
 	// First creating a user hashset
 	err := pipe.HSet(r.ctx, userName, passwordKey, password, isStandingForElectionKey, isStandingForElection, hasVotedKey, false).Err()
@@ -60,17 +53,17 @@ func (r *Repository) AddUser(userName, password string, isStandingForElection bo
 }
 
 // this is to check if the username is unique
-func (r *Repository) CheckUserExists(userName string) (bool, error) {
+func (r *RedisRepository) CheckUserExists(userName string) (bool, error) {
 	return r.redisClient.SIsMember(r.ctx, listOfUserNames, userName).Result()
 }
 
 // this is to check if the user is standing for election
-func (r *Repository) CheckUserIsStandingForElection(userName string) (bool, error) {
+func (r *RedisRepository) CheckUserIsStandingForElection(userName string) (bool, error) {
 	return r.redisClient.SIsMember(r.ctx, listOfUserStandingForElection, userName).Result()
 }
 
 // this is to check if the user has already voted
-func (r *Repository) CheckUserHasVoted(userName string) (bool, error) {
+func (r *RedisRepository) CheckUserHasVoted(userName string) (bool, error) {
 	hasVotedString, err := r.redisClient.HGet(r.ctx, userName, hasVotedKey).Result()
 	if err != nil {
 		return false, err
@@ -79,12 +72,12 @@ func (r *Repository) CheckUserHasVoted(userName string) (bool, error) {
 }
 
 // this is to get the password of the user with particular username
-func (r *Repository) GetUserPassword(userName string) (string, error) {
+func (r *RedisRepository) GetUserPassword(userName string) (string, error) {
 	return r.redisClient.HGet(r.ctx, userName, passwordKey).Result()
 }
 
 // this is to add vote to the user
-func (r *Repository) AddVote(userName, VotedForUserName string) error {
+func (r *RedisRepository) AddVote(userName, VotedForUserName string) error {
 	pipe := r.redisClient.TxPipeline()
 
 	// We set the voter's has voted to true
@@ -104,7 +97,7 @@ func (r *Repository) AddVote(userName, VotedForUserName string) error {
 }
 
 // this is to get the current vote snapshot
-func (r *Repository) GetCurrentVoteSapshot() ([]leaderBoardItem, error) {
+func (r *RedisRepository) GetCurrentVoteSapshot() ([]leaderBoardItem, error) {
 	leadersWithScores, err := r.redisClient.ZRevRangeWithScores(r.ctx, sortedSetContainingLeaderBoard, 0, -1).Result()
 	if err != nil {
 		return nil, err
