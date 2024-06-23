@@ -7,5 +7,5 @@ import (
 
 type Server struct {
 	proto.UnimplementedAuthServiceServer
-	Service services.UserService
+	Service *services.UserService
 }
