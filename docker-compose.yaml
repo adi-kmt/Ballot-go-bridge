@@ -1,4 +1,16 @@
 services:
+  voting-application:
+    restart: always
+    image: docker-go:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - 9091:9091
+    depends_on:
+      - db
+    command: ./docker-go
   db:
     image: redis:7.2-alpine
     restart: always

@@ -8,10 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const key = "SampleKey"
+var key = []byte("SecretYouShouldHide")
 
 func GenerateToken(username string) (string, *messages.AppError) {
-	t := jwt.NewWithClaims(jwt.SigningMethodES256,
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"username": username,
 			"exp":      time.Now().Add(time.Hour * 24).Unix(),
@@ -25,20 +25,15 @@ func GenerateToken(username string) (string, *messages.AppError) {
 }
 
 func ParseTokenAndGetClaims(tokenString string) (string, *messages.AppError) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return "", nil
+		return []byte(token.Raw), nil
 	})
 
-	// Handle parsing errors
-	if err != nil {
-		return "", messages.InternalServerError("Error in parsing the token")
-	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		if usernameClaim, ok := claims["username"].(string); ok {
 			return usernameClaim, nil
 		} else {

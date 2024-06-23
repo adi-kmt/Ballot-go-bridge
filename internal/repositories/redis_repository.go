@@ -26,8 +26,9 @@ type RedisRepository struct {
 	redisClient *redis.Client
 }
 
-func NewRedisRepository(redisClient *redis.Client) *RedisRepository {
+func NewRedisRepository(redisClient *redis.Client, ctx context.Context) *RedisRepository {
 	return &RedisRepository{
+		ctx:         ctx,
 		redisClient: redisClient,
 	}
 }

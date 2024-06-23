@@ -1,6 +1,34 @@
 ## A Voting system
 A simple voting system built with grpc and websockets to vote and get the latest updates, built with gorilla websockets, grpc-gateway and redis.
 
+## Endpoints
+- `v1/login` for logging, use header `Content-Type` -> `application/grpc`
+ ```json
+{
+  "username": "example_username",
+  "password": "example_password"
+}
+ ```
+
+- `v1/register` for registering, use header `Content-Type` -> `application/grpc`
+```json
+{
+  "username": "example_username",
+  "password": "example_password",
+  "isstandingforelection": true
+}
+```
+- `v1/vote` To vote with header `BearerToken` with the JWT token you get from the previous endpoints
+- `v1/dashboard` To get the current leaderboard value, use header `BearerToken` with the JWT token you get from the previous endpoints.
+
+## Sample Voting
+Attached a Voting and dashboard to get all the data
+![Vote](images/vote.png) 
+Sample Voting added
+
+![Dashboard](images/vote_dashboard.png)
+Sample Dashboard with all the data
+
 ## Project Structure
 - `cmd/` contains the main file to be run.
 - `proto/` contains the proto and generated files for the grpc server.

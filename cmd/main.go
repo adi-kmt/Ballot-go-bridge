@@ -23,7 +23,8 @@ func main() {
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
-	userService, votingService := injection.Injector()
+	ctx := context.Background()
+	userService, votingService := injection.Injector(ctx)
 
 	// Create a gRPC server object
 	s := grpc.NewServer()
@@ -119,7 +120,7 @@ func main() {
 	gwServer := &http.Server{
 		Addr: ":9091",
 		Handler: http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
-			if req.ProtoMajor == 2 && strings.Contains(req.Header.Get("Content-Type"), "application/grpc") {
+			if strings.Contains(req.Header.Get("Content-Type"), "application/grpc") {
 				mux.ServeHTTP(resp, req)
 			} else if req.URL.Path == "/v1/vote" {
 				http.DefaultServeMux.ServeHTTP(resp, req)
