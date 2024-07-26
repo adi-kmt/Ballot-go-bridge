@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/adi-kmt/ai-streak-backend-go/internal/jwt"
-	"github.com/adi-kmt/ai-streak-backend-go/internal/messages"
-	"github.com/adi-kmt/ai-streak-backend-go/internal/repositories"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/jwt"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/messages"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/repositories"
 )
 
 type UserService struct {

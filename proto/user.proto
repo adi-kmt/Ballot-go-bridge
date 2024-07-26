@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/adi-kmt/ai-streak-backend-go";
+option go_package = "github.com/adi-kmt/voting-backend-go-grpc";
 
 import "google/api/annotations.proto";
 

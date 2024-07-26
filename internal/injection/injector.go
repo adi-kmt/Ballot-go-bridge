@@ -3,9 +3,9 @@ package injection
 import (
 	"context"
 
-	"github.com/adi-kmt/ai-streak-backend-go/internal/config"
-	"github.com/adi-kmt/ai-streak-backend-go/internal/repositories"
-	"github.com/adi-kmt/ai-streak-backend-go/internal/services"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/config"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/repositories"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/services"
 )
 
 // Simple DI component

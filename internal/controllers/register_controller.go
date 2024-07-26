@@ -3,7 +3,7 @@ package controllers
 import (
 	"context"
 
-	"github.com/adi-kmt/ai-streak-backend-go/proto"
+	"github.com/adi-kmt/voting-backend-go-grpc/proto"
 )
 
 func (s *Server) RegisterHandler(ctx context.Context, request *proto.RegisterRequest) (*proto.AuthResponse, error) {

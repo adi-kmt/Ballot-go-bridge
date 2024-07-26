@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/adi-kmt/ai-streak-backend-go/internal/services"
-	"github.com/adi-kmt/ai-streak-backend-go/proto"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/services"
+	"github.com/adi-kmt/voting-backend-go-grpc/proto"
 )
 
 type Server struct {

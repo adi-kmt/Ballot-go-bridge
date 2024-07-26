@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/adi-kmt/ai-streak-backend-go/internal/entities"
-	"github.com/adi-kmt/ai-streak-backend-go/internal/messages"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/entities"
+	"github.com/adi-kmt/voting-backend-go-grpc/internal/messages"
 	"github.com/redis/go-redis/v9"
 )
 
